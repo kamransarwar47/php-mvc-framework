@@ -1,24 +1,24 @@
 <?php
 
-    namespace App\Core\Form;
+namespace App\Core\Form;
 
-    use App\Core\Model;
+use App\Core\Model;
 
-    class Form
+class Form
+{
+    public static function begin($action, $method)
     {
-        public static function begin($action, $method)
-        {
-            echo sprintf('<form action="%s" method="%s">', $action, $method);
-            return new Form();
-        }
-
-        public static function end()
-        {
-            echo '</form>';
-        }
-
-        public function field(Model $model, $attribute)
-        {
-            return new Field($model, $attribute);
-        }
+        echo sprintf('<form action="%s" method="%s">', $action, $method);
+        return new Form();
     }
+
+    public static function end()
+    {
+        echo '</form>';
+    }
+
+    public function field(Model $model, $attribute)
+    {
+        return new Field($model, $attribute);
+    }
+}

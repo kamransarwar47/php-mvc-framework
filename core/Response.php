@@ -1,11 +1,11 @@
 <?php
 
-    namespace App\Core;
+namespace App\Core;
 
-    class Response
+class Response
+{
+    public function setStatusCode(int $code)
     {
-        public function setStatusCode(int $code)
-        {
-            http_response_code($code);
-        }
+        http_response_code($code);
     }
+}
