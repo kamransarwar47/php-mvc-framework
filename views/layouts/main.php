@@ -1,3 +1,6 @@
+<?php
+use App\Core\Application;
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -8,7 +11,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
 
-    <title>PHP MVC Framework</title>
+    <title><?php echo $this->title; ?></title>
 </head>
 <body>
 <div class="container">
@@ -27,6 +30,7 @@
                 <a class="nav-link" href="/contact">Contact Us</a>
             </li>
         </ul>
+        <?php if(Application::isGuest()): ?>
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
                 <a class="nav-link" href="/login">Login</a>
@@ -35,11 +39,24 @@
                 <a class="nav-link" href="/register">Register</a>
             </li>
         </ul>
+        <?php else: ?>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/profile">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout"> Welcome <?php echo Application::$app->user->getDisplayName(); ?> (Logout)</a>
+                </li>
+            </ul>
+        <?php endif; ?>
     </div>
 </nav>
-
-{{ content }}
-
+    <?php if(Application::$app->session->getFlash('success')): ?>
+        <div class="alert alert-success">
+            <?php echo Application::$app->session->getFlash('success'); ?>
+        </div>
+    <?php endif; ?>
+    {{ content }}
 </div>
 
 <!-- Optional JavaScript; choose one of the two! -->

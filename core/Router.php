@@ -2,6 +2,8 @@
 
 namespace App\Core;
 
+use App\Core\Exception\NotFoundException;
+
 class Router
 {
     public Request $request;
@@ -30,41 +32,19 @@ class Router
         $method = $this->request->method();
         $callback = $this->routes[$method][$path] ?? false;
         if ($callback === false) {
-            $this->response->setStatusCode(404);
-            return $this->renderView("_404");
+            throw new NotFoundException();
         }
         if (is_string($callback)) {
-            return $this->renderView($callback);
+            return Application::$app->view->renderView($callback);
         }
         if (is_array($callback)) {
             $callback[0] = new $callback[0]();
             Application::$app->controller = $callback[0];
+            Application::$app->controller->action = $callback[1];
+            foreach (Application::$app->controller->getMiddlewares() as $middleware) {
+                $middleware->execute();
+            }
         }
-        return call_user_func($callback, $this->request);
-    }
-
-    public function renderView($view, $params = [])
-    {
-        $layoutContent = $this->layoutContent();
-        $viewContent = $this->layoutView($view, $params);
-        return str_replace('{{ content }}', $viewContent, $layoutContent);
-    }
-
-    private function layoutContent()
-    {
-        $layout = Application::$app->controller->layout;
-        ob_start();
-        include_once Application::$ROOT_DIR . "/views/layouts/$layout.php";
-        return ob_get_clean();
-    }
-
-    private function layoutView($view, $params)
-    {
-        foreach ($params as $key => $value) {
-            $$key = $value;
-        }
-        ob_start();
-        include_once Application::$ROOT_DIR . "/views/$view.php";
-        return ob_get_clean();
+        return call_user_func($callback, $this->request, $this->response);
     }
 }

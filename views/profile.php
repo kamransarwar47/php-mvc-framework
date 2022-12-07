@@ -2,6 +2,6 @@
 /**
  * @var $this \App\Core\View
  */
-$this->title = '404';
+$this->title = 'Profile';
 ?>
-<h1>Not Found</h1>
+<h1>Profile</h1>
